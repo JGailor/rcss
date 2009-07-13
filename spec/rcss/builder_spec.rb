@@ -1,6 +1,14 @@
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
 
 describe RCSS::Builder do
+  context "#render" do
+    it "should call #content" do
+      builder = RCSS::Builder.new
+      builder.should_receive(:content).and_return(an_instance_of(String))
+      builder.render
+    end
+  end
+  
   context "#style" do
     it "should create an RCSS::Style object with the outer selector as its context" do
       selector = "#project"

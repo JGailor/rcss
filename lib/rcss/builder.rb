@@ -5,6 +5,15 @@ module RCSS
       @styles = []
     end
     
+    def render
+      content
+      to_s
+    end
+    
+    def content
+      # empty stub
+    end
+    
     def style(selector, &block)
       style = RCSS::Style.new("#{@context} #{selector}".strip)
       yield style
