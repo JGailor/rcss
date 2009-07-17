@@ -16,7 +16,7 @@ module RCSS
     
     def self.run(&block)
       initializer = RCSS::Initializer.new
-      yield initializer.config
+      yield initializer.config if block_given?
       initializer.build_css
       initializer
     end
