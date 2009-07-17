@@ -1,11 +1,11 @@
 $LOAD_PATH << File.join(File.dirname(__FILE__), "..", "lib")
-$LOAD_PATH << File.join(File.dirname(__FILE__), "fixtures", "app", "css")
+$LOAD_PATH << File.join(File.dirname(__FILE__), "fixtures", "app")
 
 require 'spec'
 require 'rcss'
-require 'application'
-require 'application/layouts'
-require 'users/admins'
+require 'css/global'
+require 'css/application/layouts'
+require 'css/users/admins'
 
 RAILS_ROOT = File.join(File.dirname(__FILE__), "fixtures")
 SAMPLE_CSS_OUTPUT_PATH = File.join(File.dirname(__FILE__), "fixtures", "public", "stylesheets")

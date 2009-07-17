@@ -9,6 +9,8 @@ module RCSS
     def initialize
       @config = OpenStruct.new
       @config.compress = false
+      @config.namespace = "Css"
+      @config.css_root = "#{RAILS_ROOT}/app/css"
       @config.output_path = "#{RAILS_ROOT}/public/stylesheets"
     end
     
@@ -37,7 +39,7 @@ module RCSS
           unless File.directory?(File.join(current_path, entry))
             if entry =~ RUBY_SOURCE_NAME_MATCHER
               class_name = entry.gsub(/\.rb/, "")
-              @config.compress ? create_compressed(class_name) : create_entry(File.join(@config.output_path, sub_path), class_name)
+              @config.compress ? create_compressed(sub_path, class_name) : create_entry(sub_path, class_name)
             end
           else
             unless [".", ".."].include?(entry)
@@ -49,15 +51,22 @@ module RCSS
       end
       
       def create_entry(directory, class_name)
-        file = File.new(File.join(directory, "#{class_name}.css"), "w")
-        file.write(Module.const_get(class_name.capitalize.to_sym).new.render.to_s)
+        file = File.new(File.join(@config.output_path, directory, "#{class_name}.css"), "w")
+        file.write(get_module_constant(File.join(directory, class_name)).new.render.to_s)
         file.close        
       end
       
-      def create_compressed(class_name)
+      def create_compressed(directory, class_name)
         file = File.open(File.join(@config.output_path, "all.css"), "w+")
-        file.write(Module.const_get(class_name.capitalize.to_sym).new.render.to_s)
+        file.write(get_module_constant(File.join(directory, class_name)).new.render.to_s)
         file.close
+      end
+      
+      def get_module_constant(path)
+        opener = @config.namespace ? Module.const_get(@config.namespace) : Module
+        path.split("/").collect {|section| section.capitalize}.select{|token| token && token.length > 0}.inject(opener) do |current_module, name|
+          current_module.const_get(name.to_sym)
+        end
       end
   end
 end

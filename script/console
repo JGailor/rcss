@@ -1,0 +1,3 @@
+#!/bin/sh
+
+irb -I "lib:spec/fixtures/app"

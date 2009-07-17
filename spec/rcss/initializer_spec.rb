@@ -3,11 +3,12 @@ require File.join(File.dirname(__FILE__), "..", "spec_helper")
 describe RCSS::Initializer do
   context "run" do
     it "should fill take a block that creates a configuration object that allows you to write attributes" do
+      RCSS::Initializer.stub!(:build_css).and_return(true)
       initializer = RCSS::Initializer.run do |config|
-        config.css_root = File.join(File.dirname(__FILE__), "..", "fixtures", "app")
+        config.css_root = File.join(File.dirname(__FILE__), "..", "fixtures", "app", "css")
       end
       
-      initializer.css_root.should == File.join(File.dirname(__FILE__), "..", "fixtures", "app")
+      initializer.css_root.should == File.join(File.dirname(__FILE__), "..", "fixtures", "app", "css")
     end
     
     it "should call the #build_css method" do
@@ -18,6 +19,15 @@ describe RCSS::Initializer do
       RCSS::Initializer.run do |config|
         config.css_root = "Blah blah blah"
       end
+    end
+  end
+  
+  context "get_module_constant" do
+    it "should parse the a/b/c to A::B::C" do
+      module A;module B;class C;end;end;end
+      
+      initializer = RCSS::Initializer.new
+      initializer.send(:get_module_constant, "/a/b/c").should == A::B::C
     end
   end
   
@@ -33,7 +43,7 @@ describe RCSS::Initializer do
       end
       
       entries = Dir.entries(@stylesheets_path)
-      entries.should include("application.css")
+      entries.should include("global.css")
       entries.should include("application")
       entries.should include("users")
       File.exist?(File.join(@stylesheets_path, "application", "layouts.css")).should be_true
@@ -43,7 +53,7 @@ describe RCSS::Initializer do
     context "compress stylesheets" do
       it "should only create a file all.css" do
         RCSS::Initializer.run do |config|
-          config.css_root = File.join(File.dirname(__FILE__), "..", "fixtures", "app", "css")
+          config.css_root = File.join(File.dirname(__FILE__), "..", "fixtures", "app")
           config.output_path = @stylesheets_path
           config.compress = true
         end
