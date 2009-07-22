@@ -1,6 +1,5 @@
 module RCSS
   class Style < Builder
-    ASSIGNMENT_METHOD = /.*=$/
     attr_reader :styles
     
     def initialize(context)
@@ -17,8 +16,8 @@ module RCSS
     
     def method_missing(symbol, *args)
       symbol = symbol.to_s.gsub(/_/, "-")
-      if symbol =~ ASSIGNMENT_METHOD
-        @properties[symbol[0, symbol.size - 1]] = args[0]
+      if args.length >= 1
+        @properties[symbol] = args[0]
       end
     end
   end

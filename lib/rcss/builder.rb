@@ -15,9 +15,9 @@ module RCSS
     end
     
     def style(selector, &block)
-      style = RCSS::Style.new("#{@context} #{selector}".strip)
-      yield style
-      @styles << style
+      current_style = RCSS::Style.new("#{@context} #{selector}".strip)
+      current_style.instance_eval(&block)
+      @styles << current_style
     end
     
     def to_s

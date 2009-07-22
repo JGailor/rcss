@@ -21,9 +21,9 @@ describe RCSS::Builder do
     it "should generate the correct css" do
       selector = "#project"
       builder = RCSS::Builder.new
-      builder.style(selector) do |project_style|
-        project_style.height = "100px"
-        project_style.width = "100px"
+      builder.style(selector) do
+        height "100px"
+        width "100px"
       end
       builder.to_s.should == "#project {\nheight: 100px;\nwidth: 100px;\n}\n"
     end
@@ -32,10 +32,10 @@ describe RCSS::Builder do
   context "nested styles" do
     it "should generate the correct css for nested structures" do
       builder = RCSS::Builder.new
-      builder.style("#project") do |project_style|
-        project_style.style("#header") do |header_style|
-          header_style.style("#navigation") do |nav_style|
-            nav_style.width = "1000px"
+      builder.style("#project") do
+        style("#header") do
+          style("#navigation") do
+            width "1000px"
           end
         end
       end
